@@ -365,14 +365,14 @@
       <div class="quick-actions">
         <a href="tel:+79311056677" class="action-icon" title="Позвонить" target="_blank"><i class="fas fa-phone"></i></a>
         <a href="https://wa.me/79311056677" class="action-icon" title="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <!-- ВАЖНО: исправленная ссылка на личный Telegram -->
-        <a href="tg://resolve?phone=+79311056677" class="action-icon" title="Telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+        <!-- ВАЖНО: прямая ссылка на твой Telegram (номер) -->
+        <a href="https://t.me/+79311056677" class="action-icon" title="Telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
       </div>
 
       <div class="soft-divider"></div>
 
       <div class="action-row">
-        <!-- Кнопка возвращена к JavaScript-методу сохранения контакта -->
+        <!-- Кнопка сохранения контакта -->
         <a href="#" id="saveBtn" class="save-btn" style="text-decoration: none;">
           <i class="fas fa-address-card"></i> Сохранить контакт
         </a>
@@ -400,36 +400,20 @@
       correctLevel: QRCode.CorrectLevel.L
     });
 
-    // Сохранение контакта (vCard через Blob)
+    // Функция сохранения контакта
     function saveContact() {
-      const vcardContent = [
-        'BEGIN:VCARD',
-        'VERSION:3.0',
-        'FN:Полтэф Герман Михайлович',
-        'ORG:ООО «СДЭК»',
-        'TITLE:Коммерческий представитель СДЭК',
-        'TEL;TYPE=WORK,VOICE:+7 931 105-66-77',
-        'TEL;TYPE=CELL:+7 981 953-90-25',
-        'EMAIL;TYPE=WORK:g.poltef@cdek.ru',
-        'ADR;TYPE=WORK:;;пр-т Индустриальный, 19;Санкт-Петербург;;;Россия',
-        'URL:https://www.cdek.ru',
-        'NOTE:Коммерческий представитель СДЭК',
-        'END:VCARD'
-      ].join('\n');
+      // Прямая ссылка на vCard-файл, лежащий в репозитории
+      const vcfUrl = 'Poltef_German_CDEK.vcf';
 
-      const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-
-      // Открываем в новом окне/системном браузере — телефон распознает vCard и предложит сохранить
       if (window.Telegram && Telegram.WebApp) {
-        // В Telegram Mini App используем openLink
-        Telegram.WebApp.openLink(url);
+        // В Telegram Mini App принудительно открываем в системном браузере
+        Telegram.WebApp.openLink(vcfUrl, { try_open_system_browser: true });
       } else {
-        // Для обычных браузеров и других WebView
-        window.open(url, '_blank');
+        // Для других сред — простое скачивание
+        window.open(vcfUrl, '_blank');
       }
 
-      // Небольшая анимация на кнопке
+      // Анимация на кнопке
       const btn = document.getElementById('saveBtn');
       const originalHTML = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-check"></i> Сохранено!';
@@ -445,13 +429,15 @@
       saveContact();
     });
 
-    // Обработчики для быстрых ссылок (в Telegram Mini App открываем через openLink)
+    // Обработчики для быстрых ссылок (иконки) — в Telegram Mini App открываем через openLink
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
 
       document.querySelectorAll('.action-icon').forEach(link => {
         link.addEventListener('click', function(e) {
           e.preventDefault();
+          // Используем openLink без дополнительных опций, чтобы ссылки открывались внутри Telegram, если возможно
+          // Но для внешних ссылок (tel, wa.me, t.me) они будут обработаны системой
           Telegram.WebApp.openLink(this.href);
         });
       });
