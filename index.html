@@ -175,8 +175,7 @@
       <div class="soft-divider"></div>
 
       <div class="action-row">
-        <!-- ВАЖНО: теперь ссылка ведёт на реальный VCF-файл -->
-        <a href="Poltef_German_CDEK.vcf" download class="save-btn" style="text-decoration: none;">
+        <a href="#" id="saveContactBtn" class="save-btn" style="text-decoration: none;">
           <i class="fas fa-address-card"></i> Сохранить контакт
         </a>
       </div>
@@ -188,5 +187,43 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('saveContactBtn').addEventListener('click', function(event) {
+      event.preventDefault(); // Отменяем переход по ссылке "#"
+
+      const vcardContent = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'FN:Полтэф Герман',
+        'ORG:СДЭК',
+        'TITLE:Коммерческий представитель СДЭК',
+        'TEL;TYPE=WORK,VOICE:+7 931 105-66-77',
+        'TEL;TYPE=CELL:+7 981 953-90-25',
+        'EMAIL;TYPE=WORK:g.poltef@cdek.ru',
+        'ADR;TYPE=WORK:;;пр-т Индустриальный, 19;Санкт-Петербург;;;Россия',
+        'URL:https://www.cdek.ru',
+        'NOTE:Коммерческий представитель СДЭК',
+        'END:VCARD'
+      ].join('\n');
+
+      // Создаем Blob с правильной кодировкой
+      const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
+      
+      // Создаем ссылку для скачивания
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Poltef_German_CDEK.vcf'; // Это заставит браузер сохранить файл
+      document.body.appendChild(a);
+      a.click();
+      
+      // Чистим за собой
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    });
+  </script>
 </body>
 </html>
