@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Полтав Герман Михайлович · СДЭК</title>
 
+  <!-- Запрет кэширования страницы браузерами и WebView -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <meta property="og:title" content="Полтав Герман — коммерческий представитель СДЭК">
   <meta property="og:description" content="+7(931)105-66-77, g.poltef@cdek.ru">
   <meta property="og:type" content="website">
@@ -14,6 +19,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <style>
+    /* Стили те же, что в предыдущей версии (новая), без изменений */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -176,7 +182,6 @@
       transition: color 0.3s, border-color 0.3s;
     }
 
-    /* Новый блок: контакты + QR рядом */
     .middle-row {
       display: flex;
       justify-content: space-between;
@@ -332,7 +337,6 @@
 
       <div class="job-title">Коммерческий представитель СДЭК</div>
 
-      <!-- Контакты + QR рядом -->
       <div class="middle-row">
         <div class="contact-list">
           <div class="contact-row">
@@ -353,7 +357,6 @@
           </div>
         </div>
 
-        <!-- QR-код -->
         <div class="qr-wrapper" id="qrContainer">
           <div class="qr-tooltip">Наведите камеру</div>
           <div id="qrcode"></div>
@@ -369,7 +372,6 @@
       <div class="soft-divider"></div>
 
       <div class="action-row">
-        <!-- Прямая ссылка на файл vCard (работает везде) -->
         <a href="Poltef_German_CDEK.vcf" download class="save-btn" id="saveBtn">
           <i class="fas fa-address-card"></i> Сохранить контакт
         </a>
@@ -387,7 +389,6 @@
   </div>
 
   <script>
-    // Генерация QR-кода (ссылка на эту же страницу)
     new QRCode(document.getElementById('qrcode'), {
       text: window.location.href,
       width: 80,
@@ -397,26 +398,20 @@
       correctLevel: QRCode.CorrectLevel.L
     });
 
-    // Обработчики для ссылок внутри Telegram Mini App
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
-
-      // Делаем все внешние ссылки открывающимися через WebApp.openLink
       document.querySelectorAll('a[href^="tel:"], a[href^="https://wa.me"], a[href^="https://t.me"]').forEach(link => {
         link.addEventListener('click', function(e) {
           e.preventDefault();
           Telegram.WebApp.openLink(this.href);
         });
       });
-
-      // Кнопка сохранения — тоже через openLink (откроет vcf в системном браузере)
       document.getElementById('saveBtn').addEventListener('click', function(e) {
         e.preventDefault();
         Telegram.WebApp.openLink(this.href);
       });
     }
 
-    // Кнопка «Поделиться»
     document.getElementById('shareBtn').addEventListener('click', function() {
       if (navigator.share) {
         navigator.share({
