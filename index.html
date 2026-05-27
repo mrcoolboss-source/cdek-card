@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Полтэф Герман · СДЭК</title>
 
+  <!-- Обязательный скрипт Telegram Mini App -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   
@@ -184,7 +187,7 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp
+    // Инициализация Telegram Mini App
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
     }
@@ -192,47 +195,25 @@
     document.getElementById('saveContactBtn').addEventListener('click', function(e) {
       e.preventDefault();
 
-      // Если мы в Telegram Mini App – используем встроенный метод
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.shareContact) {
-        Telegram.WebApp.shareContact(
-          '+79311056677',   // основной номер
-          'Полтэф',         // имя
-          'Герман'          // фамилия
-        );
-        return; // Выходим, всё сделано
+      // Ссылка на реальный VCF-файл в репозитории
+      var vcfUrl = 'https://mrcoolboss-source.github.io/cdek-card/Poltef_German_CDEK.vcf';
+
+      // Если мы внутри Telegram Mini App – используем openLink, чтобы открыть файл в системном браузере
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) {
+        Telegram.WebApp.openLink(vcfUrl);
+        return;
       }
 
-      // Для всех остальных сред (ВК, браузер, другие мессенджеры) – скачиваем vCard
-      const vcardContent = [
-        'BEGIN:VCARD',
-        'VERSION:3.0',
-        'FN:Полтэф Герман',
-        'ORG:СДЭК',
-        'TITLE:Коммерческий представитель СДЭК',
-        'TEL;TYPE=WORK,VOICE:+7 931 105-66-77',
-        'TEL;TYPE=CELL:+7 981 953-90-25',
-        'EMAIL;TYPE=WORK:g.poltef@cdek.ru',
-        'ADR;TYPE=WORK:;;пр-т Индустриальный, 19;Санкт-Петербург;;;Россия',
-        'URL:https://www.cdek.ru',
-        'NOTE:Коммерческий представитель СДЭК',
-        'END:VCARD'
-      ].join('\n');
-
-      const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-
-      // Создаём невидимую ссылку и эмулируем клик
-      const a = document.createElement('a');
-      a.href = url;
+      // Для всех остальных сред (ВКонтакте, обычный браузер, другие мессенджеры) – пробуем скачать через скрытую ссылку
+      var a = document.createElement('a');
+      a.href = vcfUrl;
       a.download = 'Poltef_German_CDEK.vcf';
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-
-      // Подчищаем
-      setTimeout(() => {
+      
+      setTimeout(function() {
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
       }, 100);
     });
   </script>
