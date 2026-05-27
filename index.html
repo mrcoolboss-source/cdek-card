@@ -170,8 +170,7 @@
       <div class="soft-divider"></div>
 
       <div class="action-row">
-        <!-- Прямая ссылка на файл vCard в репозитории -->
-        <a href="Poltef_German_CDEK.vcf" download class="save-btn" style="text-decoration: none;">
+        <a href="#" id="saveContactBtn" class="save-btn" style="text-decoration: none;">
           <i class="fas fa-address-card"></i> Сохранить контакт
         </a>
       </div>
@@ -183,5 +182,59 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Инициализация Telegram WebApp
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.ready();
+    }
+
+    document.getElementById('saveContactBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Если мы в Telegram Mini App – используем встроенный метод
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.shareContact) {
+        Telegram.WebApp.shareContact(
+          '+79311056677',   // основной номер
+          'Полтэф',         // имя
+          'Герман'          // фамилия
+        );
+        return; // Выходим, всё сделано
+      }
+
+      // Для всех остальных сред (ВК, браузер, другие мессенджеры) – скачиваем vCard
+      const vcardContent = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'FN:Полтэф Герман',
+        'ORG:СДЭК',
+        'TITLE:Коммерческий представитель СДЭК',
+        'TEL;TYPE=WORK,VOICE:+7 931 105-66-77',
+        'TEL;TYPE=CELL:+7 981 953-90-25',
+        'EMAIL;TYPE=WORK:g.poltef@cdek.ru',
+        'ADR;TYPE=WORK:;;пр-т Индустриальный, 19;Санкт-Петербург;;;Россия',
+        'URL:https://www.cdek.ru',
+        'NOTE:Коммерческий представитель СДЭК',
+        'END:VCARD'
+      ].join('\n');
+
+      const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      // Создаём невидимую ссылку и эмулируем клик
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Poltef_German_CDEK.vcf';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+
+      // Подчищаем
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    });
+  </script>
 </body>
 </html>
