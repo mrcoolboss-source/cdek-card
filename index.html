@@ -364,9 +364,10 @@
 
       <div class="quick-actions">
         <a href="tel:+79311056677" class="action-icon" title="Позвонить" target="_blank"><i class="fas fa-phone"></i></a>
-        <a href="https://wa.me/79311056677" class="action-icon" title="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <!-- ВАЖНО: прямая ссылка на твой Telegram (номер) -->
-        <a href="https://t.me/+79311056677" class="action-icon" title="Telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+        <!-- Обновлено: WhatsApp теперь на доп. номер -->
+        <a href="https://wa.me/79819539025" class="action-icon" title="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <!-- Обновлено: Telegram теперь на доп. номер -->
+        <a href="https://t.me/+79819539025" class="action-icon" title="Telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
       </div>
 
       <div class="soft-divider"></div>
@@ -436,8 +437,6 @@
       document.querySelectorAll('.action-icon').forEach(link => {
         link.addEventListener('click', function(e) {
           e.preventDefault();
-          // Используем openLink без дополнительных опций, чтобы ссылки открывались внутри Telegram, если возможно
-          // Но для внешних ссылок (tel, wa.me, t.me) они будут обработаны системой
           Telegram.WebApp.openLink(this.href);
         });
       });
